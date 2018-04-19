@@ -2,7 +2,8 @@ package main
 
 import (
 	"database/sql"
-	_ "ag-manager/go-sql-driver/mysql"
+	_ "courser-server/go-sql-driver/mysql"
+	"strconv"
 )
 
 const tableNameStudents = "Students"
@@ -42,15 +43,16 @@ func (c *Connection) Close() {
 	c.database.Close()
 }
 
-func (c *Connection) AddAssignment(studentId int, projectId int, state int) error {
+func (c *Connection) AddAssignment(studentId string, projectId int, state int) error {
 	//Add the Assignment to the table via the databseconnection
-	_, err := c.database.Exec("INSERT INTO " + tableNameAssignments + " VALUES(" + string(studentId) + "," + string(projectId) + ", 0," + string(state) + ");")
+	sql := "INSERT INTO " + tableNameAssignments + " VALUES('" + studentId + "'," + strconv.Itoa(projectId) + ", '2018-05-05 10:00'," + strconv.Itoa(state) + ");"
+	_, err := c.database.Exec(sql)
 	return err
 }
 
-func (c *Connection) RemoveAssignment(studentId int, projectId int) error {
+func (c *Connection) RemoveAssignment(studentId string, projectId int) error {
 	//Delete the Assignment in the table via the databseconnection
-	_, err := c.database.Exec("DELETE FROM " + tableNameAssignments + " WHERE student_id = " + string(studentId) + " AND project_id = " + string(projectId) + ";")
+	_, err := c.database.Exec("DELETE FROM " + tableNameAssignments + " WHERE student_id = '" + studentId + "' AND project_id = " + strconv.Itoa(projectId) + ";")
 	return err
 }
 
@@ -63,19 +65,19 @@ func (c *Connection) MayAssign(studentId int, projectId int) bool {
 	err = res.Scan(&isBlacklist)
 	Check(err,true)
 	if !isBlacklist{
-	res, err  = c.database.Query("SELECT COUNT(*) FROM " + tableNameProjects + "," + tableNameGroups + "," + tableNameStudentsInGroups + "," + tableNameFilter + "," + "WHERE " + tableNameProjects + ".id = " + string(projectId) + " AND " + tableNameProjects +".id = " +  tableNameFilter + ".pid AND " + tableNameFilter + ".gid = " + tableNameGroups + ".id AND " +tableNameGroups + ".id = " + tableNameStudentsInGroups + ".gid AND " +  tableNameStudentsInGroups + ".sid = " + string(studentId) + ";")
+	res, err  = c.database.Query("SELECT COUNT(*) FROM " + tableNameProjects + "," + tableNameGroups + "," + tableNameStudentsInGroups + "," + tableNameFilter + "," + "WHERE " + tableNameProjects + ".id = " + strconv.Itoa(projectId) + " AND " + tableNameProjects +".id = " +  tableNameFilter + ".pid AND " + tableNameFilter + ".gid = " + tableNameGroups + ".id AND " +tableNameGroups + ".id = " + tableNameStudentsInGroups + ".gid AND " +  tableNameStudentsInGroups + ".sid = " + strconv.Itoa(studentId) + ";")
 	}else{
-	res, err  = c.database.Query("SELECT COUNT(*) FROM " + tableNameProjects + "," + tableNameGroups + "," + tableNameStudentsInGroups + "," + tableNameFilter + "," + "WHERE " + tableNameProjects + ".id = " + string(projectId) + " AND " + tableNameProjects +".id = " +  tableNameFilter + ".pid AND " + tableNameFilter + ".gid <> " + tableNameGroups + ".id AND " +tableNameGroups + ".id = " + tableNameStudentsInGroups + ".gid AND " +  tableNameStudentsInGroups + ".sid = " + string(studentId) + ";")
+	res, err  = c.database.Query("SELECT COUNT(*) FROM " + tableNameProjects + "," + tableNameGroups + "," + tableNameStudentsInGroups + "," + tableNameFilter + "," + "WHERE " + tableNameProjects + ".id = " + strconv.Itoa(projectId) + " AND " + tableNameProjects +".id = " +  tableNameFilter + ".pid AND " + tableNameFilter + ".gid <> " + tableNameGroups + ".id AND " +tableNameGroups + ".id = " + tableNameStudentsInGroups + ".gid AND " +  tableNameStudentsInGroups + ".sid = " + strconv.Itoa(studentId) + ";")
 	}
 	Check(err, true)
 	assign := checkCount(res) > 0
 	if !assign{
 		return false
 	}
-	res, err  = c.database.Query("SELECT COUNT("+ tableNameStudents+".id) FROM " + tableNameProjects + "," + tableNameGroups + "," + tableNameStudentsInGroups + "," + tableNameFilter + "," + "WHERE " + tableNameProjects + ".id = " + string(projectId) + " AND " + tableNameProjects +".id = " +  tableNameFilter + ".pid AND " + tableNameFilter + ".gid = " + tableNameGroups + ".id AND " +tableNameGroups + ".id = " + tableNameStudentsInGroups + ".gid;")
+	res, err  = c.database.Query("SELECT COUNT("+ tableNameStudents+".id) FROM " + tableNameProjects + "," + tableNameGroups + "," + tableNameStudentsInGroups + "," + tableNameFilter + "," + "WHERE " + tableNameProjects + ".id = " + strconv.Itoa(projectId) + " AND " + tableNameProjects +".id = " +  tableNameFilter + ".pid AND " + tableNameFilter + ".gid = " + tableNameGroups + ".id AND " +tableNameGroups + ".id = " + tableNameStudentsInGroups + ".gid;")
 	Check(err,true)
 	number := checkCount(res)
-	res, err = c.database.Query("SELECT maxNrStudents FROM " + tableNameProjects + "WHERE id = " + string(projectId) + ";")
+	res, err = c.database.Query("SELECT maxNrStudents FROM " + tableNameProjects + "WHERE id = " + strconv.Itoa(projectId) + ";")
 	Check(err,true)
 	numberMax := checkCount(res)
 	return number < numberMax
@@ -89,10 +91,10 @@ func (c *Connection) GetProjectsForStudent(studentId int) []Project {
 		var project Project
 		err = res.Scan(&project.id, &project.name, &project.description, &project.costs, &project.location, &project.coach, &project.superviser, &project.maxNrStudents)
 		
-		res, err  = c.database.Query("SELECT COUNT("+ tableNameStudents+".id) FROM " + tableNameProjects + "," + tableNameGroups + "," + tableNameStudentsInGroups + "," + tableNameFilter + "," + "WHERE " + tableNameProjects + ".id = " + string(project.id) + " AND " + tableNameProjects +".id = " +  tableNameFilter + ".pid AND " + tableNameFilter + ".gid = " + tableNameGroups + ".id AND " +tableNameGroups + ".id = " + tableNameStudentsInGroups + ".gid;")
+		res, err  = c.database.Query("SELECT COUNT("+ tableNameStudents+".id) FROM " + tableNameProjects + "," + tableNameGroups + "," + tableNameStudentsInGroups + "," + tableNameFilter + "," + "WHERE " + tableNameProjects + ".id = " + strconv.Itoa(project.id) + " AND " + tableNameProjects +".id = " +  tableNameFilter + ".pid AND " + tableNameFilter + ".gid = " + tableNameGroups + ".id AND " +tableNameGroups + ".id = " + tableNameStudentsInGroups + ".gid;")
 		Check(err,true)
 		number := checkCount(res)
-		res, err := c.database.Query("SELECT maxNrStudents FROM " + tableNameProjects + "WHERE id = " + string(project.id) + ";")
+		res, err := c.database.Query("SELECT maxNrStudents FROM " + tableNameProjects + "WHERE id = " + strconv.Itoa(project.id) + ";")
 		Check(err,true)
 		numberMax := checkCount(res)
 		if number < numberMax{
@@ -101,16 +103,16 @@ func (c *Connection) GetProjectsForStudent(studentId int) []Project {
 	}
 	Check(err, true)
 
-	res, err = c.database.Query("SELECT DISTINCT"+ tableNameProjects +".id, name, discription, costs, location, coach, superviser, maxNrStudents FROM " + tableNameProjects + "," + tableNameGroups + "," + tableNameStudentsInGroups + "," + tableNameFilter + "," + "WHERE "+ tableNameProjects +".id = " +  tableNameFilter + ".pid AND " + tableNameFilter + ".gid <> " + tableNameGroups + ".id AND " +tableNameGroups + ".id = " + tableNameStudentsInGroups + ".gid AND " +  tableNameStudentsInGroups + ".sid = " + string(studentId) + "AND isBlacklist = false;")
+	res, err = c.database.Query("SELECT DISTINCT"+ tableNameProjects +".id, name, discription, costs, location, coach, superviser, maxNrStudents FROM " + tableNameProjects + "," + tableNameGroups + "," + tableNameStudentsInGroups + "," + tableNameFilter + "," + "WHERE "+ tableNameProjects +".id = " +  tableNameFilter + ".pid AND " + tableNameFilter + ".gid <> " + tableNameGroups + ".id AND " +tableNameGroups + ".id = " + tableNameStudentsInGroups + ".gid AND " +  tableNameStudentsInGroups + ".sid = " + strconv.Itoa(studentId) + "AND isBlacklist = false;")
 	Check(err, true)
 	for res.Next(){
 		var project Project
 		err = res.Scan(&project.id, &project.name, &project.description, &project.costs, &project.location, &project.coach, &project.superviser, &project.maxNrStudents)
 		
-		res, err  = c.database.Query("SELECT COUNT("+ tableNameStudents+".id) FROM " + tableNameProjects + "," + tableNameGroups + "," + tableNameStudentsInGroups + "," + tableNameFilter + "," + "WHERE " + tableNameProjects + ".id = " + string(project.id) + " AND " + tableNameProjects +".id = " +  tableNameFilter + ".pid AND " + tableNameFilter + ".gid = " + tableNameGroups + ".id AND " +tableNameGroups + ".id = " + tableNameStudentsInGroups + ".gid;")
+		res, err  = c.database.Query("SELECT COUNT("+ tableNameStudents+".id) FROM " + tableNameProjects + "," + tableNameGroups + "," + tableNameStudentsInGroups + "," + tableNameFilter + "," + "WHERE " + tableNameProjects + ".id = " + strconv.Itoa(project.id) + " AND " + tableNameProjects +".id = " +  tableNameFilter + ".pid AND " + tableNameFilter + ".gid = " + tableNameGroups + ".id AND " +tableNameGroups + ".id = " + tableNameStudentsInGroups + ".gid;")
 		Check(err,true)
 		number := checkCount(res)
-		res, err := c.database.Query("SELECT maxNrStudents FROM " + tableNameProjects + "WHERE id = " + string(project.id) + ";")
+		res, err := c.database.Query("SELECT maxNrStudents FROM " + tableNameProjects + "WHERE id = " + strconv.Itoa(project.id) + ";")
 		Check(err,true)
 		numberMax := checkCount(res)
 		if number < numberMax{
