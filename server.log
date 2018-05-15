@@ -1,1 +1,26 @@
 
+[2018/05/15 18:42:17 sql_database.go:89] dial tcp [::1]:3306: connectex: Es konnte keine Verbindung hergestellt werden, da der Zielcomputer die Verbindung verweigerte.
+[2018/05/15 18:43:58 sql_database.go:89] Error 1064: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'WHERE Projects.id = Filter.pid AND Filter.gid = Groups.id AND Groups.id = Studen' at line 1
+[2018/05/15 18:48:41 sql_database.go:89] Error 1064: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'WHERE Projects.id = Filter.pid AND Filter.gid = Groups.id AND Groups.id = Studen' at line 1
+[2018/05/15 19:23:28 sql_database.go:89] dial tcp [::1]:3306: connectex: Es konnte keine Verbindung hergestellt werden, da der Zielcomputer die Verbindung verweigerte.
+[2018/05/15 19:23:47 sql_database.go:89] dial tcp [::1]:3306: connectex: Es konnte keine Verbindung hergestellt werden, da der Zielcomputer die Verbindung verweigerte.
+[2018/05/15 19:25:52 sql_database.go:89] dial tcp [::1]:3306: connectex: Es konnte keine Verbindung hergestellt werden, da der Zielcomputer die Verbindung verweigerte.
+[2018/05/15 19:27:34 login_request.go:37] Received request for UUID 1010
+[2018/05/15 19:27:35 login_request.go:37] Received request for UUID 1010
+[2018/05/15 19:27:35 login_request.go:37] Received request for UUID 1010
+[2018/05/15 19:27:36 login_request.go:37] Received request for UUID 1010
+[2018/05/15 19:27:36 login_request.go:37] Received request for UUID 1010
+[2018/05/15 19:28:09 login_request.go:37] Received request for UUID 1010
+[2018/05/15 19:28:09 login_request.go:37] Received request for UUID 1010
+[2018/05/15 19:28:09 login_request.go:37] Received request for UUID 1010
+[2018/05/15 19:28:44 login_request.go:37] Received request for UUID 1010
+[2018/05/15 19:29:53 login_request.go:38] Received request for UUID 1010
+[2018/05/15 19:29:55 login_request.go:38] Received request for UUID 1010
+[2018/05/15 19:29:56 login_request.go:38] Received request for UUID 1010
+[2018/05/15 19:29:56 login_request.go:38] Received request for UUID 1010
+[2018/05/15 19:31:06 login_request.go:26] Received request for UUID 1010
+[2018/05/15 19:31:07 login_request.go:26] Received request for UUID 1010
+[2018/05/15 19:31:07 login_request.go:26] Received request for UUID 1010
+[2018/05/15 19:31:07 login_request.go:26] Received request for UUID 1010
+[2018/05/15 19:31:09 login_request.go:26] Received request for UUID 1020
+[2018/05/15 19:31:16 login_request.go:26] Received request for UUID ABDCE

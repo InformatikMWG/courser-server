@@ -12,9 +12,9 @@ import (
 var w io.Writer
 
 func init() {
+	fmt.Printf("--- %v ---\n", time.Now().Format("2006/01/02 15:04:05"))
 	f, e := os.OpenFile("server.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if e != nil {
-		fmt.Printf("[%v helpers.go:17] Error opening logfile, skipping: %v", time.Now().Format("2006/01/02 15:04:05"), e)
 		w = os.Stdout
 	} else {
 		w = io.MultiWriter(os.Stdout, f)
