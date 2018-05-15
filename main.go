@@ -40,6 +40,13 @@ func main() {
 	wm := NewWorkerManager(jobQueue, maxWorkers)
 	wm.Run()
 
+	//Open connection to database.
+	OpenDB(username, password, databaseIP, databaseName)
+	// Print all entries from table Students
+	GetStudents()
+	// Close database connection when main() exits - aka when the programme exits.
+	defer DB.Close()
+
 	//Example HTTP handler for login requests.
 	Log("Registering HTTP handler for /login.")
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
