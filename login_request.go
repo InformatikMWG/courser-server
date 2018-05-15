@@ -5,9 +5,10 @@ import (
 	"net/http"
 )
 
-// LoginHandler adds login HTTP requests to the job queue.
-func LoginHandler(w http.ResponseWriter, r *http.Request, jobQueue chan Runner) {
-	// Make sure we can only be called with an HTTP POST request.
+// SimpleLoginHandler prints the posted UUID to the console and client browser.
+func SimpleLoginHandler(w http.ResponseWriter, r *http.Request, jobQueue chan Runner) {
+
+	// Make sure we can only be called with an HTTP GET request.
 	if r.Method != "GET" {
 		w.Header().Set("Allow", "GET")
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -17,8 +18,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, jobQueue chan Runner) 
 	// Render success.
 	w.WriteHeader(http.StatusCreated)
 
+	// Get field UUID from request.
 	uuid := r.FormValue("uuid")
+	// Print UUID to log and to client browser.
 	Log("Received request for UUID", uuid)
 	fmt.Fprint(w, "UUID:", uuid)
-
 }

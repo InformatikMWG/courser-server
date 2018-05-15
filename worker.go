@@ -19,6 +19,7 @@ func newWorker(jobQueue chan Runner) {
 
 // NewWorkerManager creates a new work dispatcher.
 func NewWorkerManager(jobQueue chan Runner, maxWorkers int) *WorkerManager {
+	Log("Initializing worker manager for queue", jobQueue, "with", maxWorkers, "parallel workers.")
 	return &WorkerManager{maxWorkers, jobQueue}
 }
 
@@ -31,7 +32,9 @@ type WorkerManager struct {
 // Run initializes the worker manager and starts it.
 func (d *WorkerManager) Run() {
 	// Create and start workers.
+	Log("Creating workers for channel", d.jobQueue)
 	for i := 0; i < d.maxWorkers; i++ {
 		newWorker(d.jobQueue)
+		Log("Created worker", i+1, "/", d.maxWorkers)
 	}
 }
