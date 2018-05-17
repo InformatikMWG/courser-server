@@ -23,16 +23,17 @@ type Student struct {
 	firstName string
 	lastName  string
 	password  string
+	classname string	
 }
 
 // GetStudents prints a list of all students registered in the database.
 func GetStudents() (students []Student) {
-	rows, err := DB.Query("SELECT * FROM Students")
+	rows, err := DB.Query("SELECT id, first_name, last_name, classname FROM Students")
 	Check(err, true)
 	defer rows.Close()
 	for rows.Next() {
 		s := Student{}
-		err := rows.Scan(&s.id, &s.firstName, &s.lastName, &s.password)
+		err := rows.Scan(&s.id, &s.firstName, &s.lastName, &s.classname)
 		Check(err, true)
 		students = append(students, s)
 		Log(s.id, s.firstName, s.lastName, s.password)
